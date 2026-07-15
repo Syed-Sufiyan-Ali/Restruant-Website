@@ -25,7 +25,7 @@ export async function POST(req: NextRequest) {
     const valid = await bcrypt.compare(password, user.passwordHash);
     if (!valid) return unauthorized("Invalid email or password");
 
-    const token = signToken({ sub: user.id, email: user.email, role: user.role });
+    const token = await signToken({ sub: user.id, email: user.email, role: user.role });
 
     return ok({
       token,

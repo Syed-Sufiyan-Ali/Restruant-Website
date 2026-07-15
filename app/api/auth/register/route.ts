@@ -26,7 +26,7 @@ export async function POST(req: NextRequest) {
       select: { id: true, name: true, email: true, phone: true, role: true, createdAt: true },
     });
 
-    const token = signToken({ sub: user.id, email: user.email, role: user.role });
+    const token = await signToken({ sub: user.id, email: user.email, role: user.role });
     return ok({ user, token }, "Account created successfully", 201);
   } catch (e) {
     return serverError("Registration failed", e);

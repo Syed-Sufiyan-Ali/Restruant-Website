@@ -21,6 +21,10 @@ export function middleware(req: NextRequest) {
   const isAdmin     = ADMIN_API.some((p) => pathname.startsWith(p));
 
   if (!isProtected && !isAdmin) return NextResponse.next();
+ 
+   console.log("PATH:", pathname);
+   console.log("AUTH HEADER:", req.headers.get("authorization"));
+   console.log("ALL HEADERS:", Object.fromEntries(req.headers.entries()));  
 
   const header = req.headers.get("authorization") ?? "";
   const token  = header.startsWith("Bearer ") ? header.slice(7) : null;
@@ -43,9 +47,19 @@ export function middleware(req: NextRequest) {
     headers.set("x-user-role", payload.role);
 
     return NextResponse.next({ request: { headers } });
-  } catch {
-    return NextResponse.json({ success: false, message: "Invalid or expired token" }, { status: 401 });
-  }
+  } catch (err) {
+  console.error("VERIFY ERROR:", err);
+
+  return NextResponse.json(
+    {
+      success: false,
+      message: "Invalid or expired token",
+    },
+    {
+      status: 401,
+    }
+  );
+}
 }
 
 export const config = {

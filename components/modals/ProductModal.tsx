@@ -1,4 +1,6 @@
 "use client";
+import { getToken } from "@/lib/auth/auth-storage";
+import { useAuth } from "@/lib/auth/useAuth";
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, Plus, Minus, ShoppingCart, Star, Flame } from "lucide-react";
@@ -9,11 +11,12 @@ import { useCartStore } from "@/store/cartStore";
 interface Props { product: Product | null; onClose: () => void; }
 
 export default function ProductModal({ product, onClose }: Props) {
+ 
   const [selectedSize, setSelectedSize] = useState(0);
   const [selectedExtras, setSelectedExtras] = useState<string[]>([]);
   const [qty, setQty] = useState(1);
   const { addItem } = useCartStore();
-
+   const { user } = useAuth();
   const sizePrice = product?.sizes ? product.sizes[selectedSize].price + product.basePrice : product?.basePrice || 0;
   const extrasPrice = selectedExtras.reduce((sum, id) => {
     const extra = product?.extras?.find((e) => e.id === id);
@@ -25,12 +28,12 @@ export default function ProductModal({ product, onClose }: Props) {
   const toggleExtra = (id: string) =>
     setSelectedExtras((prev) => prev.includes(id) ? prev.filter((e) => e !== id) : [...prev, id]);
 
-  const handleAdd = () => {
+  const handleAdd = async () => {
     if (!product) return;
     const size = product.sizes
   ? product.sizes[selectedSize]
   : {
-      id: null,
+      id: undefined,
       label: "Standard",
       price: 0,
       serves: "",
@@ -39,22 +42,55 @@ export default function ProductModal({ product, onClose }: Props) {
       const e = product.extras?.find((ex) => ex.id === id)!;
       return { id: e.id, label: e.label, price: e.price };
     });
-    addItem({
-  id: `${product.id}-${size.label}-${selectedExtras.sort().join("-")}`,
-  productId: product.id,
-  name: product.name,
-  image: product.image,
 
-  sizeId: size.id,
-  size: size.label,
-  sizePrice: size.price + product.basePrice,
+const token = getToken();
 
-  extras,
+if (user && token) {
+  console.log("TOKEN:", token);
+  const res = await fetch("/api/cart", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({
+      menuItemId: product.id,
+      sizeId: size.id,
+      addonIds: extras.map((e) => e.id),
+      quantity: qty,
+    }),
+  });
 
-  quantity: qty,
-  totalPrice: total,
-});
-    setSelectedSize(0); setSelectedExtras([]); setQty(1); onClose();
+  const json = await res.json();
+
+  if (!res.ok) {
+    alert(json.message || "Failed to add item.");
+    return;
+  }
+
+  alert("🍕 Added to your cart!");
+} else {
+  addItem({
+    id: `${product.id}-${size.label}-${selectedExtras.sort().join("-")}`,
+    productId: product.id,
+    name: product.name,
+    image: product.image,
+
+    sizeId: size.id,
+    size: size.label,
+    sizePrice: size.price + product.basePrice,
+
+    extras,
+
+    quantity: qty,
+    totalPrice: total,
+  });
+}
+
+    setSelectedSize(0); 
+    setSelectedExtras([]); 
+    setQty(1);
+     onClose();
   };
 
   return (

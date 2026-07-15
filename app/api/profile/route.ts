@@ -12,8 +12,8 @@ export async function GET(req: NextRequest) {
     }
 
     const token = auth.split(" ")[1];
-    const payload = verifyToken(token);
-
+    const payload = await verifyToken(token);
+    console.log("PROFILE ROUTE VERSION 2");
     const user = await prisma.user.findUnique({
       where: {
         id: payload.sub,
@@ -70,7 +70,7 @@ export async function PATCH(req: NextRequest) {
     }
 
     const token = auth.split(" ")[1];
-    const payload = verifyToken(token);
+    const payload =  await verifyToken(token);
 
     const body = await req.json();
 
