@@ -10,6 +10,7 @@ interface CartStore {
   removeItem: (id: string) => void;
   updateQty: (id: string, qty: number) => void;
   clearCart: () => void;
+  setItems: (items: CartItem[]) => void;
   openCart: () => void;
   closeCart: () => void;
   toggleCart: () => void;
@@ -38,6 +39,9 @@ export const useCartStore = create<CartStore>()(
       removeItem: (id) => set((s) => ({ items: s.items.filter((i) => i.id !== id) })),
       updateQty: (id, qty) => set((s) => ({ items: qty <= 0 ? s.items.filter((i) => i.id !== id) : s.items.map((i) => i.id === id ? { ...i, quantity: qty, totalPrice: qty * (i.sizePrice + i.extras.reduce((a, e) => a + e.price, 0)) } : i) })),
       clearCart: () => set({ items: [] }),
+
+      setItems: (items) => set({ items }),
+
       openCart: () => set({ isOpen: true }),
       closeCart: () => set({ isOpen: false }),
       toggleCart: () => set((s) => ({ isOpen: !s.isOpen })),

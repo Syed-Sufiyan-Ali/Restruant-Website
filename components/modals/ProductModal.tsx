@@ -7,7 +7,7 @@ import { X, Plus, Minus, ShoppingCart, Star, Flame } from "lucide-react";
 import Image from "next/image";
 import { Product } from "@/types";
 import { useCartStore } from "@/store/cartStore";
-
+import { useCart } from "@/lib/cart/cart-context";
 interface Props { product: Product | null; onClose: () => void; }
 
 export default function ProductModal({ product, onClose }: Props) {
@@ -16,6 +16,7 @@ export default function ProductModal({ product, onClose }: Props) {
   const [selectedExtras, setSelectedExtras] = useState<string[]>([]);
   const [qty, setQty] = useState(1);
   const { addItem } = useCartStore();
+  const { refreshCart } = useCart();
    const { user } = useAuth();
   const sizePrice = product?.sizes ? product.sizes[selectedSize].price + product.basePrice : product?.basePrice || 0;
   const extrasPrice = selectedExtras.reduce((sum, id) => {
@@ -46,7 +47,6 @@ export default function ProductModal({ product, onClose }: Props) {
 const token = getToken();
 
 if (user && token) {
-  console.log("TOKEN:", token);
   const res = await fetch("/api/cart", {
     method: "POST",
     headers: {
@@ -67,7 +67,7 @@ if (user && token) {
     alert(json.message || "Failed to add item.");
     return;
   }
-
+  await refreshCart();
   alert("🍕 Added to your cart!");
 } else {
   addItem({
@@ -76,7 +76,7 @@ if (user && token) {
     name: product.name,
     image: product.image,
 
-    sizeId: size.id,
+    sizeId: size.id ?? null,
     size: size.label,
     sizePrice: size.price + product.basePrice,
 

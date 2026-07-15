@@ -14,7 +14,7 @@ const PROTECTED_API = [
 // Routes only ADMIN / SUPER_ADMIN can access
 const ADMIN_API = ["/api/admin"];
 
-export function middleware(req: NextRequest) {
+export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
   const isProtected = PROTECTED_API.some((p) => pathname.startsWith(p));
@@ -34,7 +34,9 @@ export function middleware(req: NextRequest) {
   }
 
   try {
-    const payload = verifyToken(token);
+    const payload = await verifyToken(token);
+    console.log("JWT PAYLOAD:", payload);
+    console.log("JWT SUB:", payload.sub);
 
     if (isAdmin && !["ADMIN", "SUPER_ADMIN", "MANAGER"].includes(payload.role)) {
       return NextResponse.json({ success: false, message: "Forbidden" }, { status: 403 });
@@ -45,7 +47,7 @@ export function middleware(req: NextRequest) {
     headers.set("x-user-id",   payload.sub);
     headers.set("x-user-email",payload.email);
     headers.set("x-user-role", payload.role);
-
+    console.log("SETTING x-user-id:", payload.sub);
     return NextResponse.next({ request: { headers } });
   } catch (err) {
   console.error("VERIFY ERROR:", err);

@@ -8,6 +8,7 @@ import prisma from "@/lib/prisma/client";
 export async function GET(req: NextRequest) {
   try {
     const userId = req.headers.get("x-user-id")!;
+    console.log("ROUTE RECEIVED x-user-id:", userId);
     const couponCode = new URL(req.url).searchParams.get("coupon") ?? undefined;
     const { cart, ...totals } = await calculateCartTotals((await getOrCreateCart(userId)).id, couponCode);
     return ok({ cart, ...totals });
@@ -18,6 +19,7 @@ export async function GET(req: NextRequest) {
 export async function POST(req: NextRequest) {
   try {
     const userId = req.headers.get("x-user-id")!;
+    console.log("ROUTE RECEIVED x-user-id:", userId);
     const parsed = AddToCartSchema.safeParse(await req.json());
     if (!parsed.success) return validationError(parsed.error.flatten().fieldErrors);
 
@@ -47,6 +49,7 @@ export async function POST(req: NextRequest) {
 export async function DELETE(req: NextRequest) {
   try {
     const userId = req.headers.get("x-user-id")!;
+    console.log("ROUTE RECEIVED x-user-id:", userId);
     const cart = await getOrCreateCart(userId);
     await prisma.cartItem.deleteMany({ where: { cartId: cart.id } });
     return ok(null, "Cart cleared");

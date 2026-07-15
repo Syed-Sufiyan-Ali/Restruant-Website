@@ -4,6 +4,7 @@ const TAX_RATE = 0.05;
 const FREE_DELIVERY_THRESHOLD = 500;
 
 export async function getOrCreateCart(userId: string) {
+  console.log("UPSERT USER ID:", userId);
   return prisma.cart.upsert({
     where:  { userId },
     update: {},
