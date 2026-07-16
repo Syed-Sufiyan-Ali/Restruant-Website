@@ -4,7 +4,7 @@ import { useSearchParams } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import { CheckCircle2, ChefHat, Bike, Package, Phone, MessageCircle, ArrowRight, Clock, MapPin } from "lucide-react";
-import { useOrderStore } from "@/store/orderStore";
+import { getToken } from "@/lib/auth/auth-storage";
 import { OrderStatus } from "@/types";
 interface TrackOrderItem {
   id: string;
@@ -41,16 +41,26 @@ function TrackContent() {
   if (!orderNumber) return;
 
   const loadOrder = async () => {
-    const res = await fetch(`/api/guest-orders/${orderNumber}`);
-    const json: {
-  success: boolean;
-  data: TrackOrder;
-} = await res.json();
+  const token = getToken();
 
-    if (json.success) {
-      setOrder(json.data);
-    }
-  };
+  const endpoint = token
+    ? `/api/orders/${orderNumber}`
+    : `/api/guest-orders/${orderNumber}`;
+
+  const res = await fetch(endpoint, {
+    headers: token
+      ? {
+          Authorization: `Bearer ${token}`,
+        }
+      : {},
+  });
+
+  const json = await res.json();
+
+  if (json.success) {
+    setOrder(json.data);
+  }
+};
 
   loadOrder();
 }, [orderNumber]);

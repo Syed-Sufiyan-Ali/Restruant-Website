@@ -6,6 +6,7 @@ import { motion } from "framer-motion";
 import Image from "next/image";
 import { MapPin, Phone, User, CreditCard, Smartphone, Banknote, ChevronRight, ShoppingBag, Tag, ArrowLeft } from "lucide-react";
 import { useCartStore } from "@/store/cartStore";
+import { useCart } from "@/lib/cart/cart-context";
 import { useOrderStore } from "@/store/orderStore";
 import Link from "next/link";
 
@@ -18,8 +19,13 @@ const payOpts = [
 
 export default function CheckoutPage() {
   const router = useRouter();
-  const { items, totalPrice, clearCart } = useCartStore();
+  const { cart, refreshCart } = useCart();
+  const { clearCart } = useCartStore();
   const { placeOrder } = useOrderStore();
+  const items = cart?.items ?? [];
+  const subtotal = cart?.subtotal ?? 0;
+  const deliveryFee = cart?.deliveryFee ?? 0;
+  const total = cart?.totalAmount ?? subtotal;
   const [form, setForm] = useState({ name:"", phone:"", address:"", note:"" });
   const [payment, setPayment] = useState<PM>("cod");
   const [promoCode, setPromoCode] = useState("");
@@ -27,9 +33,9 @@ export default function CheckoutPage() {
   const [promoError, setPromoError] = useState("");
   const [errors, setErrors] = useState<Record<string,string>>({});
   const [placing, setPlacing] = useState(false);
-  const subtotal = totalPrice();
   const discount = promoApplied ? Math.floor(subtotal * 0.1) : 0;
-  const total = subtotal - discount;
+  const finalTotal = total - discount;
+  
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement|HTMLTextAreaElement>) => {
     setForm((f) => ({ ...f, [e.target.name]: e.target.value }));
@@ -166,16 +172,64 @@ router.push(`/track?order=${json.data.orderNumber}`);
             <motion.div initial={{ opacity:0,x:20 }} animate={{ opacity:1,x:0 }} transition={{ delay:0.15 }} className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100 sticky top-24">
               <h2 className="font-bold text-gray-900 text-lg mb-5 flex items-center gap-2"><ShoppingBag size={20} className="text-red-500" />Order Summary</h2>
               <div className="space-y-3 mb-5 max-h-56 overflow-y-auto pr-1">
-                {items.map((item) => (
-                  <div key={item.id} className="flex gap-3">
-                    <div className="relative w-14 h-14 rounded-xl overflow-hidden flex-shrink-0"><Image src={item.image} alt={item.name} fill className="object-cover" /></div>
-                    <div className="flex-1 min-w-0">
-                      <p className="font-semibold text-gray-900 text-sm truncate">{item.name}</p>
-                      <p className="text-xs text-gray-400">{item.size} × {item.quantity}</p>
-                    </div>
-                    <span className="font-bold text-sm text-gray-900 whitespace-nowrap">Rs. {item.totalPrice.toLocaleString()}</span>
-                  </div>
-                ))}
+               
+            {items.map((item: any) => {
+  const image =
+    item.image ??
+    item.menuItem?.images?.[0]?.url ??
+    "/placeholder.png";
+
+  const name =
+    item.name ??
+    item.menuItem?.name;
+
+  const size =
+    item.size?.label ??
+    item.size ??
+    "Standard";
+
+  const price =
+    item.totalPrice ??
+    (
+      Number(item.menuItem?.basePrice ?? 0) +
+      Number(item.size?.priceAddon ?? 0) +
+      (
+        item.addons?.reduce(
+          (sum: number, a: any) =>
+            sum + Number(a.addon?.price ?? a.price ?? 0),
+          0
+        ) ?? 0
+      )
+    ) * item.quantity;
+
+  return (
+    <div key={item.id} className="flex gap-3">
+      <div className="relative w-14 h-14 rounded-xl overflow-hidden flex-shrink-0">
+        <Image
+          src={image}
+          alt={name}
+          fill
+          className="object-cover"
+        />
+      </div>
+
+      <div className="flex-1 min-w-0">
+        <p className="font-semibold text-gray-900 text-sm truncate">
+          {name}
+        </p>
+
+        <p className="text-xs text-gray-400">
+          {size} × {item.quantity}
+        </p>
+      </div>
+
+      <span className="font-bold text-sm text-gray-900 whitespace-nowrap">
+        Rs. {price.toLocaleString()}
+      </span>
+    </div>
+  );
+})}
+
               </div>
               <div className="h-px bg-gray-100 mb-4" />
               <div className="mb-4">
@@ -191,9 +245,16 @@ router.push(`/track?order=${json.data.orderNumber}`);
               <div className="space-y-2 text-sm">
                 <div className="flex justify-between text-gray-500"><span>Subtotal</span><span>Rs. {subtotal.toLocaleString()}</span></div>
                 {promoApplied && <div className="flex justify-between text-green-600 font-semibold"><span>Discount (10%)</span><span>− Rs. {discount.toLocaleString()}</span></div>}
-                <div className="flex justify-between text-gray-500"><span>Delivery</span><span className="text-green-600 font-semibold">Free</span></div>
+                <div className="flex justify-between text-gray-500">
+  <span>Delivery</span>
+  <span className="text-green-600 font-semibold">
+    Rs. {deliveryFee.toLocaleString()}
+  </span>
+</div>
                 <div className="h-px bg-gray-100 my-2" />
-                <div className="flex justify-between font-black text-lg text-gray-900"><span>Total</span><span className="text-red-500">Rs. {total.toLocaleString()}</span></div>
+                <div className="flex justify-between font-black text-lg text-gray-900"><span>Total</span><span className="text-red-500">
+  Rs. {finalTotal.toLocaleString()}
+</span></div>
               </div>
               <button onClick={placeOrderHandler} disabled={placing}
                 className="w-full mt-6 bg-gradient-to-r from-red-500 to-orange-500 text-white py-4 rounded-2xl font-black text-base hover:shadow-xl hover:shadow-red-500/30 transition-all hover:scale-[1.02] active:scale-[0.98] disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2">
