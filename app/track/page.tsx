@@ -8,20 +8,46 @@ import { getToken } from "@/lib/auth/auth-storage";
 import { OrderStatus } from "@/types";
 interface TrackOrderItem {
   id: string;
-  name: string;
-  size: string;
+
+  menuItem?: {
+    name: string;
+  };
+
+  name?: string;
+
+  size?: {
+    label: string;
+  };
+
   quantity: number;
-  totalPrice: number;
+
+  totalPrice: number | string;
 }
 
 interface TrackOrder {
-  id: string;
+     id: string;
+  orderNumber?: string;
+
   status: OrderStatus;
-  total: number;
+
+  subtotal?: number | string;
+  deliveryFee?: number | string;
+  taxAmount?: number | string;
+  totalAmount?: number | string;
+
+  total?: number;
+
   estimatedTime: string;
   paymentMethod: string;
-  address: string;
-  phone: string;
+
+  address?:
+    | {
+        addressLine1: string;
+      }
+    | string;
+
+  phone?: string;
+
   items: TrackOrderItem[];
 }
 
@@ -57,9 +83,14 @@ function TrackContent() {
 
   const json = await res.json();
 
-  if (json.success) {
-    setOrder(json.data);
-  }
+console.log("TRACK RESPONSE");
+console.log(json);
+console.log("TRACK DATA");
+console.log(JSON.stringify(json.data, null, 2));;
+
+if (json.success) {
+  setOrder(json.data);
+}
 };
 
   loadOrder();
@@ -99,7 +130,7 @@ function TrackContent() {
         <motion.div initial={{ opacity:0,y:20 }} animate={{ opacity:1,y:0 }} transition={{ delay:0.1 }} className="bg-white rounded-3xl p-5 shadow-sm border border-gray-100 mb-5">
           <div className="flex items-center justify-between flex-wrap gap-3">
             <div><p className="text-xs text-gray-400 font-semibold uppercase tracking-widest">Order ID</p><p className="font-black text-xl text-gray-900 mt-0.5">#{order.id}</p></div>
-            <div className="text-right"><p className="text-xs text-gray-400 font-semibold uppercase tracking-widest">Total Paid</p><p className="font-black text-xl text-red-500 mt-0.5">Rs. {order.total.toLocaleString()}</p></div>
+            <div className="text-right"><p className="text-xs text-gray-400 font-semibold uppercase tracking-widest">Total Paid</p><p className="font-black text-xl text-red-500 mt-0.5">Rs. {Number(order.totalAmount).toLocaleString()}</p></div>
             <div><p className="text-xs text-gray-400 font-semibold uppercase tracking-widest flex items-center gap-1"><Clock size={10} />Est. Delivery</p><p className="font-bold text-gray-900 mt-0.5">{order.estimatedTime}</p></div>
             <div><p className="text-xs text-gray-400 font-semibold uppercase tracking-widest">Payment</p><p className="font-bold text-gray-900 mt-0.5 capitalize">{order.paymentMethod==="cod"?"Cash on Delivery":order.paymentMethod}</p></div>
           </div>
@@ -140,7 +171,9 @@ function TrackContent() {
         <motion.div initial={{ opacity:0,y:20 }} animate={{ opacity:1,y:0 }} transition={{ delay:0.3 }} className="bg-white rounded-3xl p-5 shadow-sm border border-gray-100 mb-5">
           <div className="flex items-start gap-3">
             <div className="w-10 h-10 bg-red-50 rounded-xl flex items-center justify-center flex-shrink-0"><MapPin size={18} className="text-red-500" /></div>
-            <div><p className="text-xs text-gray-400 font-semibold uppercase tracking-widest mb-1">Delivering To</p><p className="font-semibold text-gray-900 text-sm">{order.address}</p><p className="text-gray-400 text-xs mt-0.5">{order.phone}</p></div>
+            <div><p className="text-xs text-gray-400 font-semibold uppercase tracking-widest mb-1">Delivering To</p><p className="font-semibold text-gray-900 text-sm">{typeof order.address === "string"
+  ? order.address
+  : order.address?.addressLine1 ?? "No address"}</p><p className="text-gray-400 text-xs mt-0.5">{order.phone ?? "No phone"}</p></div>
           </div>
         </motion.div>
         <motion.div initial={{ opacity:0,y:20 }} animate={{ opacity:1,y:0 }} transition={{ delay:0.35 }} className="bg-white rounded-3xl p-5 shadow-sm border border-gray-100 mb-5">
@@ -150,9 +183,9 @@ function TrackContent() {
               <div key={item.id} className="flex items-center justify-between gap-3">
                 <div className="flex items-center gap-3">
                   <span className="w-7 h-7 bg-red-100 text-red-600 text-xs font-black rounded-lg flex items-center justify-center">{item.quantity}×</span>
-                  <div><p className="text-sm font-semibold text-gray-900">{item.name}</p><p className="text-xs text-gray-400">{item.size}</p></div>
+                  <div><p className="text-sm font-semibold text-gray-900">{item.menuItem?.name ?? item.name}</p><p className="text-xs text-gray-400">{item.size?.label}</p></div>
                 </div>
-                <span className="text-sm font-bold text-gray-900">Rs. {item.totalPrice.toLocaleString()}</span>
+                <span className="text-sm font-bold text-gray-900">Rs. {Number(item.totalPrice).toLocaleString()}</span>
               </div>
             ))}
           </div>

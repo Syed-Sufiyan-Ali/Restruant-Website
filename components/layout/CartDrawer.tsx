@@ -10,6 +10,9 @@ export default function CartDrawer() {
    const { cart, refreshCart } = useCart();
   const { items, isOpen, closeCart, removeItem, updateQty, totalPrice } = useCartStore();
   const displayItems = cart?.items ?? items;
+  console.log("cart =", cart);
+console.log("items =", items);
+console.log("displayItems =", displayItems);
 const handleDelete = async (itemId: string) => {
   if (cart) {
     const token = localStorage.getItem("pizza_token");

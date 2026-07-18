@@ -20,12 +20,23 @@ const payOpts = [
 export default function CheckoutPage() {
   const router = useRouter();
   const { cart, refreshCart } = useCart();
-  const { clearCart } = useCartStore();
+  const {
+  items: guestItems,
+  totalPrice,
+  clearCart,
+} = useCartStore();
   const { placeOrder } = useOrderStore();
-  const items = cart?.items ?? [];
-  const subtotal = cart?.subtotal ?? 0;
-  const deliveryFee = cart?.deliveryFee ?? 0;
-  const total = cart?.totalAmount ?? subtotal;
+
+  const items = cart?.items ?? guestItems;
+
+const subtotal =
+  cart?.subtotal ?? totalPrice();
+
+const deliveryFee =
+  cart?.deliveryFee ?? 0;
+
+const total =
+  cart?.totalAmount ?? subtotal + deliveryFee;
   const [form, setForm] = useState({ name:"", phone:"", address:"", note:"" });
   const [payment, setPayment] = useState<PM>("cod");
   const [promoCode, setPromoCode] = useState("");
@@ -74,6 +85,7 @@ headers: {
     guestName: form.name,
     guestPhone: form.phone,
     guestAddress: form.address,
+    type: "DELIVERY",
     paymentMethod: payment,
     note: form.note,
     items,

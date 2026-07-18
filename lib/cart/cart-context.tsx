@@ -45,7 +45,7 @@ export function CartProvider({
       });
 
       const json = await res.json();
-
+     console.log(json.data.cart);
      if (json.success) {
   setCart(json.data.cart);
 

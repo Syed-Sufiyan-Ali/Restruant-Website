@@ -26,7 +26,7 @@ export async function GET(
         },
       },
     });
-
+    
     if (!order) {
       return NextResponse.json(
         {
@@ -36,7 +36,12 @@ export async function GET(
         { status: 404 }
       );
     }
-
+    console.log("GUEST TRACK ORDER");
+console.log({
+  guestName: order.guestName,
+  guestPhone: order.guestPhone,
+  guestAddress: order.guestAddress,
+});
     return NextResponse.json({
   success: true,
   data: {

@@ -41,6 +41,9 @@ export async function createOrder(userId: string | null, input: CreateOrderInput
       data: {
         orderNumber,
         userId,
+        guestName: input.guestName,
+guestPhone: input.guestPhone,
+guestAddress: input.guestAddress,
         addressId:     input.addressId,
         type:          input.type,
         paymentMethod: input.paymentMethod,
@@ -62,7 +65,13 @@ export async function createOrder(userId: string | null, input: CreateOrderInput
         timeline: true,
       },
     });
-
+     console.log("ORDER CREATED:");
+console.log({
+  guestName: newOrder.guestName,
+  guestPhone: newOrder.guestPhone,
+  guestAddress: newOrder.guestAddress,
+  addressId: newOrder.addressId,
+});
     // Increment coupon usage
     if (coupon) {
       await tx.coupon.update({ where: { id: coupon.id }, data: { usedCount: { increment: 1 } } });
@@ -70,7 +79,13 @@ export async function createOrder(userId: string | null, input: CreateOrderInput
 
     // Clear cart
     await tx.cartItem.deleteMany({ where: { cartId: cart.id } });
-
+     console.log("ORDER CREATED:");
+console.log({
+  guestName: newOrder.guestName,
+  guestPhone: newOrder.guestPhone,
+  guestAddress: newOrder.guestAddress,
+  addressId: newOrder.addressId,
+});
     return newOrder;
   });
 
