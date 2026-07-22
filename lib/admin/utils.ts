@@ -54,3 +54,24 @@ export function getInitials(name: string): string {
   const initials = parts.slice(0, 2).map((part) => part[0]?.toUpperCase() ?? "");
   return initials.join("");
 }
+// ─────────────────────────────────────────────────────────────
+// Formatting helpers
+// ─────────────────────────────────────────────────────────────
+
+export function formatCurrency(amount: number): string {
+  return new Intl.NumberFormat("en-PK", {
+    style: "currency",
+    currency: "PKR",
+    maximumFractionDigits: 0,
+  }).format(amount);
+}
+
+export function formatDateTime(date: string | Date): string {
+  return new Intl.DateTimeFormat("en-PK", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+    hour: "numeric",
+    minute: "2-digit",
+  }).format(new Date(date));
+}

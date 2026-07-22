@@ -27,10 +27,20 @@ export async function GET(req: NextRequest) {
     const where: any = { isAvailable: true };
     if (category) where.category = { slug: category };
     if (featured) where.isFeatured = true;
-    if (search) where.OR = [
-      { name: { contains: search, mode: "insensitive" } },
-      { description: { contains: search, mode: "insensitive" } },
-    ];
+   if (search) {
+  where.OR = [
+    {
+      name: {
+        contains: search,
+      },
+    },
+    {
+      description: {
+        contains: search,
+      },
+    },
+  ];
+}
 
     const [items, total] = await Promise.all([
       prisma.menuItem.findMany({ where, select: itemSelect, orderBy: { sortOrder:"asc" }, skip:(page-1)*limit, take:limit }),
@@ -38,7 +48,9 @@ export async function GET(req: NextRequest) {
     ]);
 
     return ok({ items, total, page, limit, totalPages: Math.ceil(total/limit) });
-  } catch (e) { return serverError("Failed to fetch menu items", e); }
+  } catch (e) { 
+    console.error(e);
+    return serverError("Failed to fetch menu items", e); }
 }
 
 export async function POST(req: NextRequest) {

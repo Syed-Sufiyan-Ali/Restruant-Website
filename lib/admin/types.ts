@@ -9,7 +9,7 @@ export type LoadState<T> =
 export interface PaginatedResult<T> {
   items: T[];
   page: number;
-  pageSize: number;
+  limit: number;
   total: number;
   totalPages: number;
 }
@@ -24,12 +24,12 @@ export interface OrderTimelineEntry {
 
 export interface OrderItemSize {
   id: string;
-  name: string;
+  label: string;
 }
 
 export interface OrderItemAddon {
   id: string;
-  name: string;
+  label: string;
   price: number;
 }
 

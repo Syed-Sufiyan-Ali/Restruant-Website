@@ -5,16 +5,55 @@ import { requireRole } from "@/lib/auth/middleware";
 
 
 export async function GET(req: NextRequest) {
-  const { error } = requireRole(req, ["ADMIN","SUPER_ADMIN","MANAGER"]);
-  if (error) return error;
+  const { user, error } = await requireRole(req, [
+    "ADMIN",
+    "SUPER_ADMIN",
+    "MANAGER",
+]);
+
+if (error) return error;
   try {
     const { searchParams } = new URL(req.url);
     const status = searchParams.get("status");
+    const search = searchParams.get("search");
     const page   = Math.max(1, Number(searchParams.get("page") ?? 1));
     const limit  = 20;
 
     const where: any = {};
-    if (status) where.status = status;
+
+if (status)
+  where.status = status;
+
+if (search) {
+  where.OR = [
+    {
+      orderNumber: {
+        contains: search,
+        mode: "insensitive",
+      },
+    },
+    {
+      guestName: {
+        contains: search,
+        mode: "insensitive",
+      },
+    },
+    {
+      guestPhone: {
+        contains: search,
+        mode: "insensitive",
+      },
+    },
+    {
+      user: {
+        name: {
+          contains: search,
+          mode: "insensitive",
+        },
+      },
+    },
+  ];
+}
 
     const [orders, total] = await Promise.all([
       prisma.order.findMany({

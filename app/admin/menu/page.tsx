@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 import { Plus, ChevronDown, ChevronUp, LayoutGrid, List } from "lucide-react";
 
 import { PageHeader } from "@/components/admin/ui/PageHeader";
-import { SearchInput } from "@/components/admin/ui/SearchInput";
+import { SearchInput } from "@/components/admin/common/SearchInput";
 import { Pagination } from "@/components/admin/ui/Pagination";
 import { ConfirmDialog } from "@/components/admin/ui/ConfirmDialog";
 import { LoadingScreen } from "@/components/admin/ui/LoadingScreen";
@@ -60,7 +60,7 @@ function MenuPageInner() {
   const [search, setSearch] = useState("");
   const [categoryFilter, setCategoryFilter] = useState<string>("");
   const [page, setPage] = useState(1);
-  const searchTimeout = useRef<ReturnType<typeof setTimeout>>();
+  const searchTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // ─── Modals ────────────────────────────────────────────────────────────────
   const [catModalOpen, setCatModalOpen] = useState(false);
@@ -103,13 +103,21 @@ function MenuPageInner() {
 
   // Debounce search, reset page
   useEffect(() => {
+  if (searchTimeout.current) {
     clearTimeout(searchTimeout.current);
-    searchTimeout.current = setTimeout(() => {
-      setPage(1);
-      loadItems();
-    }, 300);
-    return () => clearTimeout(searchTimeout.current);
-  }, [search, categoryFilter]); // eslint-disable-line react-hooks/exhaustive-deps
+  }
+
+  searchTimeout.current = setTimeout(() => {
+    setPage(1);
+    loadItems();
+  }, 300);
+
+  return () => {
+    if (searchTimeout.current) {
+      clearTimeout(searchTimeout.current);
+    }
+  };
+}, [search, categoryFilter]); // eslint-disable-line react-hooks/exhaustive-deps // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => { loadItems(); }, [loadItems]);
 
@@ -271,7 +279,7 @@ function MenuPageInner() {
           </div>
 
           {/* Filters */}
-          <div className="flex flex-wrap items-center gap-2">
+          <div className="flex w-full flex-col gap-2 sm:w-auto sm:flex-row sm:items-center">
             {/* Category filter */}
             <select
               value={categoryFilter}
@@ -290,7 +298,7 @@ function MenuPageInner() {
               value={search}
               onChange={(v) => { setSearch(v); setPage(1); }}
               placeholder="Search items…"
-              className="w-48"
+              className="w-full sm:w-64"
             />
           </div>
         </div>

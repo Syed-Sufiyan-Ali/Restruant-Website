@@ -23,7 +23,12 @@ export async function GET(req: NextRequest) {
       prisma.order.count({ where:{ userId } }),
     ]);
 
-    return ok({ orders, total, page, totalPages: Math.ceil(total/limit) });
+    return ok({ items: orders,
+    total,
+    page,
+    limit,
+    totalPages
+: Math.ceil(total/limit) });
   } catch (e) { return serverError("Failed to fetch orders", e); }
 }
 

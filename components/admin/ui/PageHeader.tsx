@@ -15,7 +15,7 @@ export function PageHeader({ title, description, actions }: PageHeaderProps) {
       initial={{ opacity: 0, y: -6 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.2, ease: "easeOut" }}
-      className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between"
+      className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between"
     >
       <div>
         <h1 className="font-[family-name:var(--font-admin-display)] text-xl font-semibold text-[var(--admin-text)]">

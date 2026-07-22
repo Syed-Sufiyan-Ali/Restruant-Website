@@ -10,7 +10,7 @@ export interface OrdersQuery {
   sortDir?: "asc" | "desc";
 }
 
-function buildQueryString(query: Record<string, unknown>): string {
+function buildQueryString(query: OrdersQuery): string {
   const params = new URLSearchParams();
   Object.entries(query).forEach(([key, value]) => {
     if (value !== undefined && value !== null && value !== "") params.set(key, String(value));
@@ -31,7 +31,7 @@ export function fetchOrders(query: OrdersQuery = {}) {
 
 /** Existing endpoint: GET /api/orders/[id]/route.ts */
 export function fetchOrder(id: string) {
-  return adminApi.get<Order>(`/api/orders/${id}`);
+  return adminApi.get<Order>(`/api/admin/orders/${id}`);
 }
 
 /**
@@ -41,5 +41,7 @@ export function fetchOrder(id: string) {
  * default guess — update the path below if the real one differs.
  */
 export function updateOrderStatus(id: string, status: string) {
-  return adminApi.patch<Order>(`/api/orders/${id}/status`, { status });
+  return adminApi.patch<Order>(`/api/admin/orders/${id}/status`, {
+    status,
+  });
 }
