@@ -41,7 +41,7 @@ console.log({
       ? `${order.address.street}, ${order.address.area}, ${order.address.city}`
       : order.guestAddress,
 
-  items: order.items.map(item => ({
+  items: order.items.map((item: any) => ({
     id: item.id,
 
     menuItem: {

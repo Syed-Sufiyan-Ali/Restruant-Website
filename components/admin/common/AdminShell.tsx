@@ -20,9 +20,18 @@ export function AdminShell({ children }: AdminShellProps) {
   const [collapsed, setCollapsed] = useSidebarCollapsed();
   const [mobileOpen, setMobileOpen] = useState(false);
 
-  if (isLoading) return <LoadingScreen />;
-  // useAdminAuth has already triggered a redirect to LOGIN_ROUTE in this case.
-  if (!isAuthenticated) return null;
+if (isLoading) return <LoadingScreen />;
+
+if (!isAuthenticated) return null;
+
+const allowedRoles = ["ADMIN", "SUPER_ADMIN", "MANAGER"];
+
+if (!user || !allowedRoles.includes(user.role)) {
+  if (typeof window !== "undefined") {
+    window.location.href = "/";
+  }
+  return null;
+}
 
   return (
     <div
