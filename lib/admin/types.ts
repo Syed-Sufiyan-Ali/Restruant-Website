@@ -14,7 +14,7 @@ export interface PaginatedResult<T> {
   totalPages: number;
 }
 
-export type OrderStatus = "CONFIRMED" | "PREPARING" | "OUT_FOR_DELIVERY" | "DELIVERED" | "CANCELLED";
+export type OrderStatus = "CONFIRMED" | "PREPARING" | "ON_THE_WAY" | "DELIVERED" | "CANCELLED";
 
 export interface OrderTimelineEntry {
   status: string;
@@ -34,9 +34,18 @@ export interface OrderItemAddon {
 }
 
 export interface OrderItem {
-  id: string;
-  menuItem: { id: string; name: string };
-  images?: string[];
+   id: string;
+
+  menuItem: {
+    id: string;
+    name: string;
+    images?: {
+      id: string;
+      url: string;
+      isPrimary: boolean;
+    }[];
+  };
+
   size?: OrderItemSize | null;
   addons?: OrderItemAddon[];
   quantity: number;
@@ -47,18 +56,20 @@ export interface OrderItem {
 export interface OrderCoupon {
   id: string;
   code: string;
-  discountAmount?: number;
+   type: string;
+    value: number;
 }
 
 export interface OrderAddress {
-  id: string;
-  label?: string;
-  street: string;
-  city?: string;
-  notes?: string;
+     id: string;
+    label?: string;
+    street: string;
+    area?: string;
+    city?: string;
+    isDefault?: boolean;
 }
 
-export interface OrderCustomer {
+export interface OrderUser {
   id: string;
   name: string;
   phone?: string;
@@ -84,7 +95,7 @@ export interface Order {
   items: OrderItem[];
   timeline: OrderTimelineEntry[];
   coupon?: OrderCoupon | null;
-  customer?: OrderCustomer | null;
+  user?: OrderUser | null;
   createdAt: string;
   updatedAt: string;
 }

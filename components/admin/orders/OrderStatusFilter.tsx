@@ -10,8 +10,7 @@ const TABS: Tab[] = [
   { value: "PENDING", label: "Pending" },
   { value: "CONFIRMED", label: "Confirmed" },
   { value: "PREPARING", label: "Preparing" },
-  { value: "READY", label: "Ready" },
-  { value: "OUT_FOR_DELIVERY", label: "Delivery" },
+  { value: "ON_THE_WAY", label: "On The Way" },
   { value: "DELIVERED", label: "Delivered" },
   { value: "CANCELLED", label: "Cancelled" },
 ];

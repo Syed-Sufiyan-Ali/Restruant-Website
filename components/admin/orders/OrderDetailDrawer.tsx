@@ -155,35 +155,35 @@ export function OrderDetailDrawer({
             />
           </Section>
 
-          {/* Customer */}
-          <Section icon={User} title="Customer">
-            {order.customer ? (
+          {/* user */}
+          <Section icon={User} title="user">
+            {order.user ? (
               <>
-                <InfoRow label="Name" value={order.customer.name} />
-                {order.customer.phone && (
+                <InfoRow label="Name" value={order.user.name} />
+                {order.user.phone && (
                   <InfoRow
                     label="Phone"
                     value={
                       <a
-                        href={`tel:${order.customer.phone}`}
+                        href={`tel:${order.user.phone}`}
                         className="flex items-center gap-1 text-[var(--admin-accent)] hover:underline"
                       >
                         <Phone size={11} />
-                        {order.customer.phone}
+                        {order.user.phone}
                       </a>
                     }
                   />
                 )}
-                {order.customer.email && (
+                {order.user.email && (
                   <InfoRow
                     label="Email"
                     value={
                       <a
-                        href={`mailto:${order.customer.email}`}
+                        href={`mailto:${order.user.email}`}
                         className="flex items-center gap-1 text-[var(--admin-accent)] hover:underline"
                       >
                         <Mail size={11} />
-                        {order.customer.email}
+                        {order.user.email}
                       </a>
                     }
                   />
@@ -225,8 +225,8 @@ export function OrderDetailDrawer({
                   {order.address.city && (
                     <InfoRow label="City" value={order.address.city} />
                   )}
-                  {order.address.notes && (
-                    <InfoRow label="Notes" value={order.address.notes} />
+                  {order.address.isDefault && (
+                    <InfoRow label="Default Address" value="Yes" />
                   )}
                 </>
               ) : (
@@ -244,13 +244,13 @@ export function OrderDetailDrawer({
                   className="flex gap-3 rounded-lg border border-[var(--admin-border)] bg-[var(--admin-surface)] p-3"
                 >
                   {/* Thumbnail */}
-                  {item.images && item.images.length > 0 ? (
-                    <img
-                      src={item.images[0]}
-                      alt={item.menuItem.name}
-                      className="h-12 w-12 flex-shrink-0 rounded-lg object-cover"
-                    />
-                  ) : (
+                  {item.menuItem.images && item.menuItem.images.length > 0 ? (
+  <img
+    src={item.menuItem.images[0].url}
+    alt={item.menuItem.name}
+    className="h-12 w-12 flex-shrink-0 rounded-lg object-cover"
+  />
+) : (
                     <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-lg bg-[var(--admin-surface-2)] text-lg">
                       🍕
                     </div>

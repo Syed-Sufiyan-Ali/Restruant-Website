@@ -25,8 +25,23 @@ function buildQueryString(query: OrdersQuery): string {
  * sortBy/sortDir) and the list response shape (PaginatedResult<Order>) match
  * what this route actually returns.
  */
-export function fetchOrders(query: OrdersQuery = {}) {
-  return adminApi.get<PaginatedResult<Order>>(`/api/orders${buildQueryString(query)}`);
+export async function fetchOrders(query: OrdersQuery = {}) {
+  const res = await adminApi.get<any>(
+    `/api/admin/orders${buildQueryString(query)}`
+  );
+
+  if (!res.success) return res;
+
+  return {
+    ...res,
+    data: {
+      items: res.data.orders,
+      page: res.data.page,
+      total: res.data.total,
+      totalPages: res.data.totalPages,
+      limit: 20,
+    },
+  };
 }
 
 /** Existing endpoint: GET /api/orders/[id]/route.ts */

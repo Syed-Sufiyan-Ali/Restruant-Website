@@ -29,12 +29,7 @@ const STATUS_MAP: Record<string, StatusConfig> = {
     dot: "bg-violet-400",
     badge: "bg-violet-400/10 text-violet-500 border-violet-400/20",
   },
-  READY: {
-    label: "Ready",
-    dot: "bg-cyan-400",
-    badge: "bg-cyan-400/10 text-cyan-500 border-cyan-400/20",
-  },
-  OUT_FOR_DELIVERY: {
+ ON_THE_WAY: {
     label: "Out for Delivery",
     dot: "bg-orange-400",
     badge: "bg-orange-400/10 text-orange-500 border-orange-400/20",

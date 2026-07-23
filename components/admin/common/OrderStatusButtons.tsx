@@ -16,8 +16,7 @@ const TRANSITIONS: Partial<Record<string, Transition[]>> = {
     {
       to: "CONFIRMED",
       label: "Confirm Order",
-      style:
-        "bg-blue-500 text-white hover:bg-blue-600",
+      style: "bg-blue-500 text-white hover:bg-blue-600",
     },
     {
       to: "CANCELLED",
@@ -26,6 +25,7 @@ const TRANSITIONS: Partial<Record<string, Transition[]>> = {
         "border border-red-400/40 bg-red-500/10 text-red-500 hover:bg-red-500/20",
     },
   ],
+
   CONFIRMED: [
     {
       to: "PREPARING",
@@ -39,26 +39,16 @@ const TRANSITIONS: Partial<Record<string, Transition[]>> = {
         "border border-red-400/40 bg-red-500/10 text-red-500 hover:bg-red-500/20",
     },
   ],
+
   PREPARING: [
     {
-      to: "READY",
-      label: "Mark Ready",
-      style: "bg-cyan-500 text-white hover:bg-cyan-600",
-    },
-  ],
-  READY: [
-    {
-      to: "OUT_FOR_DELIVERY",
+      to: "ON_THE_WAY",
       label: "Out for Delivery",
       style: "bg-orange-500 text-white hover:bg-orange-600",
     },
-    {
-      to: "DELIVERED",
-      label: "Mark Delivered",
-      style: "bg-emerald-500 text-white hover:bg-emerald-600",
-    },
   ],
-  OUT_FOR_DELIVERY: [
+
+  ON_THE_WAY: [
     {
       to: "DELIVERED",
       label: "Mark Delivered",

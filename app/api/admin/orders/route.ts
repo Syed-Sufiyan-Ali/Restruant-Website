@@ -29,26 +29,25 @@ if (search) {
     {
       orderNumber: {
         contains: search,
-        mode: "insensitive",
       },
     },
     {
       guestName: {
         contains: search,
-        mode: "insensitive",
+       
       },
     },
     {
       guestPhone: {
         contains: search,
-        mode: "insensitive",
+        
       },
     },
     {
       user: {
         name: {
           contains: search,
-          mode: "insensitive",
+         
         },
       },
     },

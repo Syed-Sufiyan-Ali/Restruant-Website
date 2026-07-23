@@ -55,9 +55,9 @@ guestAddress: input.guestAddress,
         totalAmount,
         couponId:      coupon?.id,
         estimatedTime: "30–45 minutes",
-        status:        "CONFIRMED",
+        status:        "PENDING",
         items:         { create: itemsData },
-        timeline:      { create: { status: "CONFIRMED", note: "Order received and confirmed" } },
+        timeline:      { create: { status: "PENDING", note: "Order received" } },
       },
       include: {
         items: { include: { menuItem: { select: { name:true } }, addons: true } },
@@ -106,13 +106,56 @@ console.log({
 }
 
 export async function updateOrderStatus(orderId: string, status: string, note?: string) {
-  const order = await prisma.order.update({
+ const order = await prisma.order.update({
     where: { id: orderId },
-    data:  { status },
-    include: { timeline: true, user: { select: { email:true, name:true } } },
-  });
+    data: { status },
+});
 
-  await prisma.orderTimeline.create({ data: { orderId, status, note } });
+await prisma.orderTimeline.create({
+    data: {
+        orderId,
+        status,
+        note,
+    },
+});
+
+const updatedOrder = await prisma.order.findUnique({
+    where: { id: orderId },
+    include: {
+        user: {
+            select: {
+                id: true,
+                name: true,
+                email: true,
+                phone: true,
+            },
+        },
+        address: true,
+        coupon: true,
+        timeline: {
+            orderBy: {
+                createdAt: "asc",
+            },
+        },
+        items: {
+            include: {
+                menuItem: {
+                    include: {
+                        images: true,
+                    },
+                },
+                size: true,
+                addons: {
+                    include: {
+                        addon: true,
+                    },
+                },
+            },
+        },
+    },
+});
+
+return updatedOrder;
 
   // Send status update email
   try {

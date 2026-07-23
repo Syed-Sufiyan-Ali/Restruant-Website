@@ -33,7 +33,7 @@ export async function createGuestOrder(input: GuestOrderInput) {
 
       estimatedTime: "30-45 Minutes",
 
-      status: "CONFIRMED",
+      status: "PENDING",
 
       items: {
         create: input.items.map((item) => ({
@@ -56,7 +56,7 @@ export async function createGuestOrder(input: GuestOrderInput) {
 
       timeline: {
         create: {
-          status: "CONFIRMED",
+          status: "PENDING",
           note: "Guest order placed",
         },
       },

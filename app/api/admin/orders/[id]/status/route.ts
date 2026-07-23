@@ -7,8 +7,7 @@ const VALID_STATUSES = [
   "PENDING",
   "CONFIRMED",
   "PREPARING",
-  "READY",
-  "OUT_FOR_DELIVERY",
+  "ON_THE_WAY",
   "DELIVERED",
   "CANCELLED",
 ] as const;
