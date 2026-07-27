@@ -134,6 +134,8 @@ export interface DashboardStats {
   deliveredToday: number;
   totalCustomers: number;
   reservationsToday: number;
+  paymentStatus: string;
+  paidAt?: string | null;
 }
 
 export interface RevenuePoint {

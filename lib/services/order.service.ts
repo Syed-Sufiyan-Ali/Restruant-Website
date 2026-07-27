@@ -170,3 +170,29 @@ return updatedOrder;
 
   return order;
 }
+export async function updateOrderPaymentStatus(
+  orderId: string,
+  paymentStatus: string
+) {
+  return prisma.order.update({
+    where: {
+      id: orderId,
+    },
+    data: {
+      paymentStatus,
+      // paidAt:
+      //   paymentStatus === "PAID"
+      //     ? new Date()
+      //     : null,
+    },
+    include: {
+      timeline: true,
+      user: {
+        select: {
+          email: true,
+          name: true,
+        },
+      },
+    },
+  });
+}

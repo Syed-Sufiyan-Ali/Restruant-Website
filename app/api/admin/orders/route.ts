@@ -3,7 +3,7 @@ import prisma from "@/lib/prisma/client";
 import { ok, serverError } from "@/lib/api/response";
 import { requireRole } from "@/lib/auth/middleware";
 
-
+console.log("🔥 ADMIN ORDER ROUTE HIT 🔥");
 export async function GET(req: NextRequest) {
   const { user, error } = await requireRole(req, [
     "ADMIN",

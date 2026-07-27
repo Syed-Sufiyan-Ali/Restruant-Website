@@ -247,6 +247,7 @@ model Order {
   status          OrderStatus @default(PENDING)
   paymentMethod   String      // cod | jazzcash | easypaisa | card
   paymentStatus   PaymentStatus @default(UNPAID)
+  paidAt          DateTime?
   subtotal        Decimal     @db.Decimal(10, 2)
   discountAmount  Decimal     @db.Decimal(10, 2) @default(0)
   deliveryFee     Decimal     @db.Decimal(10, 2) @default(0)

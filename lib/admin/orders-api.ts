@@ -60,3 +60,14 @@ export function updateOrderStatus(id: string, status: string) {
     status,
   });
 }
+export function updateOrderPaymentStatus(
+  id: string,
+ paymentStatus: string
+) {
+  return adminApi.patch<Order>(
+    `/api/admin/orders/${id}/payment`,
+    {
+      paymentStatus,
+    }
+  );
+}

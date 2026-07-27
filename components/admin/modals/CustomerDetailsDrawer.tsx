@@ -43,7 +43,7 @@ export function CustomerDetailsDrawer({ customer, onClose }: CustomerDetailsDraw
       open={!!customer}
       onClose={onClose}
       title={customer?.name ?? "Customer"}
-      subtitle={customer?.email ?? customer?.phone ?? undefined}
+      description={customer?.email ?? customer?.phone ?? undefined}
     >
       {customer && (
         <div className="space-y-6 text-sm">

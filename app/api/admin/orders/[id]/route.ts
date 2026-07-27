@@ -95,7 +95,14 @@ if (error) return error;
     });
 
     if (!order) return notFound("Order not found.");
-
+    console.log("ORDER SENT TO FRONTEND");
+console.log(order.paymentStatus);
+console.log(order);
+return ok({
+  ...order,
+  paymentStatus: order.paymentStatus,
+  paidAt: order.paidAt,
+});
     return ok(order);
   } catch (err) {
     console.error("[GET /api/admin/orders/:id]", err);
