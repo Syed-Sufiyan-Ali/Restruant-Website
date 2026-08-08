@@ -4,7 +4,6 @@ import { ok, badRequest, notFound, serverError } from "@/lib/api/response";
 import { updateOrderPaymentStatus } from "@/lib/services/order.service";
 
 const VALID_PAYMENT_STATUSES = [
-  
   "FAILED",
   "PAID",
   "REFUNDED",

@@ -34,6 +34,7 @@ export function CategoryModal({ open, category, onClose, onSaved }: CategoryModa
         category
           ? {
               name: category.name,
+              slug: category.slug,
               description: category.description ?? "",
               sortOrder: category.sortOrder,
               isActive: category.isActive,

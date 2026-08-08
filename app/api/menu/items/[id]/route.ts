@@ -19,7 +19,7 @@ export async function GET(_: NextRequest, { params }: Ctx) {
 }
 export async function PATCH(req: NextRequest, { params }: Ctx) {
   const { id } = await params;
-  const { error } = requireRole(req, ["ADMIN","SUPER_ADMIN","MANAGER"]);
+  const { error } = await requireRole(req, ["ADMIN","SUPER_ADMIN","MANAGER"]);
   if (error) return error;
   try {
     const parsed = MenuItemSchema.partial().safeParse(await req.json());
@@ -30,7 +30,7 @@ export async function PATCH(req: NextRequest, { params }: Ctx) {
 }
 export async function DELETE(req: NextRequest, { params }: Ctx) {
   const { id } = await params;
-  const { error } = requireRole(req, ["ADMIN","SUPER_ADMIN"]);
+  const { error } = await requireRole(req, ["ADMIN","SUPER_ADMIN"]);
   if (error) return error;
   try { await prisma.menuItem.delete({ where:{ id } }); return noContent(); }
   catch (e) { return serverError("Failed to delete item", e); }

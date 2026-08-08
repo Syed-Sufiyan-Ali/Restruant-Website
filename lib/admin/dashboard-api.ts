@@ -9,17 +9,17 @@ import type { DashboardStats, RevenuePoint, TopSellingItem } from "./types";
  * aggregation endpoint already exists.
  */
 export function fetchDashboardStats() {
-  return adminApi.get<DashboardStats>("/api/dashboard/stats");
+  return adminApi.get<DashboardStats>("/api/admin/dashboard");
 }
 
 /** TODO: Requires backend endpoint — confirm path and the `range` param. */
 export function fetchRevenueChart(range: "7d" | "30d" = "7d") {
-  return adminApi.get<RevenuePoint[]>(`/api/dashboard/revenue?range=${range}`);
+  return adminApi.get<RevenuePoint[]>(`/api/admin/revenue?range=${range}`);
 }
 
 /** TODO: Requires backend endpoint. */
 export function fetchTopSellingItems(limit = 5) {
-  return adminApi.get<TopSellingItem[]>(`/api/dashboard/top-items?limit=${limit}`);
+  return adminApi.get<TopSellingItem[]>(`/api/admin/top-items?limit=${limit}`);
 }
 
 /**
