@@ -192,7 +192,7 @@ async function load() {
               <StatCard
                 key={card.key}
                 label={card.label}
-                value={card.format(stats[card.key])}
+                value={card.format(Number(stats[card.key] ?? 0))}
                 icon={card.icon}
                 iconColor={card.iconColor}
                 iconBg={card.iconBg}
