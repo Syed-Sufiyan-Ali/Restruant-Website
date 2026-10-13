@@ -135,7 +135,7 @@ async function load() {
   if (res.success) {
     console.log("Dashboard response:", res.data);
 
-    setStats(res.data.stats); // <-- THIS WAS MISSING
+    setStats(res.data); // <-- THIS WAS MISSING
   } else {
     setError(res.message);
   }
