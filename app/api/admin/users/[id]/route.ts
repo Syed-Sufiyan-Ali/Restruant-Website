@@ -8,7 +8,7 @@ type Ctx = { params: Promise<{ id: string }> };
 const S = z.object({ isActive: z.boolean().optional(), role: z.enum(["SUPER_ADMIN","ADMIN","MANAGER","CUSTOMER"]).optional() });
 export async function PATCH(req: NextRequest, { params }: Ctx) {
   const { id } = await params;
-  const { error } = requireRole(req, ["ADMIN","SUPER_ADMIN"]);
+  const { error } = await requireRole(req, ["ADMIN","SUPER_ADMIN"]);
   if (error) return error;
   try {
     const parsed = S.safeParse(await req.json());
